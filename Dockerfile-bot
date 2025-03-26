@@ -1,0 +1,16 @@
+# Utilise une image Python légère
+FROM python:3.11-slim  
+
+# Définit le dossier de travail
+WORKDIR /app  
+
+# Copie les fichiers nécessaires
+COPY requirements.txt .  
+COPY bot.py .
+COPY .creds . 
+
+# Installe les dépendances
+RUN pip install --no-cache-dir -r requirements.txt  
+
+# Démarre le bot
+CMD ["python", "bot.py"]

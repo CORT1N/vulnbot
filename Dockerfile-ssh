@@ -1,0 +1,36 @@
+# Dockerfile-ssh
+
+FROM debian:latest
+
+# Mise à jour des paquets et installation d'OpenSSH, sudo et autres dépendances nécessaires
+RUN apt-get update && \
+    apt-get install -y openssh-server sudo
+
+# Création du répertoire nécessaire pour SSH
+RUN mkdir /var/run/sshd
+
+# Création de l'utilisateur debug-user et ajout du groupe sudo
+RUN useradd -m debug-user && \
+    mkdir -p /home/debug-user/.ssh && \
+    chown -R debug-user:debug-user /home/debug-user
+
+# Copier la clé publique dans le conteneur
+COPY id_rsa.pub /home/debug-user/.ssh/authorized_keys
+
+# Modifier les permissions sur les fichiers SSH
+RUN chmod 700 /home/debug-user/.ssh && \
+    chmod 600 /home/debug-user/.ssh/authorized_keys && \
+    chown -R debug-user:debug-user /home/debug-user/.ssh
+
+# Désactiver l'authentification par mot de passe et activer l'authentification par clé publique
+RUN sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config && \
+    sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+
+# Accorder des privilèges sudo à debug-user (sans mot de passe)
+RUN echo 'debug-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Exposer le port SSH
+EXPOSE 2222
+
+# Démarrer SSH
+CMD ["/usr/sbin/sshd", "-D"]

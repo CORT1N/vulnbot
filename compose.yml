@@ -1,0 +1,36 @@
+---
+services:
+  bot:
+    build:
+      dockerfile: ./Dockerfile-bot
+    container_name: vulnbot
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}  # Utiliser la variable d'environnement DISCORD_TOKEN
+
+  smb:
+    image: dperson/samba
+    container_name: smb-server
+    restart: unless-stopped
+    ports:
+      # - "139:139"
+      - "445:445"
+    environment:
+      USER: "debug-user;debugforu"  # Définit l'utilisateur et le mot de passe
+      SHARE: "debugshare;/smbshare;yes;no;no;debug-user"  # Partage nommé "debugshare"
+    volumes:
+      - ./smb_data:/smbshare  # Lien vers un dossier local
+
+  ssh:
+    hostname: debug-cli
+    build:
+      dockerfile: ./Dockerfile-ssh  # Dossier où se trouve le Dockerfile pour le serveur SSH vulnérable
+    container_name: ssh
+    restart: unless-stopped
+    volumes:
+      - ./ssh_data:/root/
+    ports:
+      - "2222:22"  # Expose le port SSH sur le port 2222
+    environment:
+      - SSH_KEY_PATH=/home/debug-user/.ssh/authorized_keys
+...

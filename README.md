@@ -1,6 +1,6 @@
 # VulnBot - A vulnerable Discord Bot
 
-For the Hack In Time v2 that took place in my school (**ESGI**) organized by @Thom-Son, I made this multi-step challenge based on the assumption that a developer left a Discord Bot in *debug mode*.
+For the Hack In Time v2 that took place in my school (**ESGI**) organized by [Thom-Son](https://github.com/Thom-Son), I made this multi-step challenge based on the assumption that a developer left a Discord Bot in *debug mode*.
 
 ## Prerequisites
 

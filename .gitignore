@@ -1,1 +1,5 @@
+# Critical
 .env
+
+# Miscellaneous
+.DS_Store
